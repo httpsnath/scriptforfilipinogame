@@ -31,7 +31,7 @@ local Players = game:GetService("Players")
 
 local localPlayer = Players.LocalPlayer
 
-local localKariderya
+local localKarinderya
 for i = 1, 6 do
     local karenderya = workspace:FindFirstChild("Karenderya" .. (i == 1 and "" or i))
     
