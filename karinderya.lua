@@ -19,26 +19,41 @@ local shopTab = Window:Tab({
 
 
 getgenv().toggles = {
-
     autoAssign = false
-
 }
 
--- Services
 local RepStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 
 local localPlayer = Players.LocalPlayer
 
-local localKarinderya
+-- Find player's Karenderya
+local localKarenderya
+
 for i = 1, 6 do
-    local karenderya = workspace:FindFirstChild("Karenderya" .. (i == 1 and "" or i))
-    
-    if karenderya and karenderya:GetAttribute("Owner") == localPlayer.UserId then
-        localKarinderya = karenderya
+    local karenderya = workspace:FindFirstChild(
+        "Karenderya" .. (i == 1 and "" or i)
+    )
+
+    if karenderya
+        and karenderya:GetAttribute("Owner") == localPlayer.UserId
+    then
+        localKarenderya = karenderya
         break
     end
+end
+
+if not localKarenderya then
+    warn("Could not find player's Karenderya")
+    return
+end
+
+-- Dining plot
+local tables = localKarenderya:FindFirstChild("DiningPlot1")
+
+if not tables then
+    warn("DiningPlot1 not found")
+    return
 end
 
 -- Remotes
@@ -49,11 +64,6 @@ local GetCounterInfo = CounterRemotes:WaitForChild("GetCounterInfo")
 local AssignNPC = CounterRemotes:WaitForChild("AssignNPC")
 
 
--- KarinderyaStorage
-local tables = localKarenderya:FindFirstChild("DiningPlot1")
-
-
-
 mainTab:Toggle({
     Title = "Auto Assign",
     Value = false,
@@ -61,7 +71,7 @@ mainTab:Toggle({
     Callback = function(state)
         toggles.autoAssign = state
 
-        if not toggles.autoAssign then
+        if not state then
             return
         end
 
@@ -69,7 +79,7 @@ mainTab:Toggle({
 
             local counterInfo = GetCounterInfo:InvokeServer()
 
-            if not counterInfo then
+            if not counterInfo or not counterInfo.NpcId then
                 task.wait(1)
                 continue
             end
