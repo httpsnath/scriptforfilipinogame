@@ -321,7 +321,7 @@ mainTab:Toggle({
                 thisIndex
             )
 
-            local result = AssignNPC:InvokeServer({
+            local result = AssignNPC:FireServer({
                 NpcId = thisNpcId,
                 Seat = thisIndex,
                 NPCName = thisNpcId,
